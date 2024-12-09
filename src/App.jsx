@@ -1,32 +1,5 @@
 import { useState, useEffect } from "react";
-
-function Card({ name, image, status, setScore, setBestScore, setPokemons, score }) {
-  
-  function handleClick() {
-    function updatePokemons(array) {
-      let i = array.findIndex(element => element.name === name);
-      let a = [...array]
-      a[i] = {name, image, chosen:true}
-      return a;
-    }
-    if(status == false){
-      setScore(s => s + 1);
-      setPokemons(poke => shuffleArray(updatePokemons(poke)));
-    }
-    else {
-      setBestScore(bs => Math.max(score, bs));
-      setScore(0);
-      setPokemons(poke => shuffleArray(poke.map(p => ({name:p.name,image:p.image,chosen : false}))));
-    }
-  }
-
-  return (
-    <div className="p-4 text-center border border-white card" onClick={handleClick}>
-      <img src={image} alt={name} className="h-32 mx-auto" />
-      <p> {name} </p>
-    </div>
-  );
-}
+import Card from './Card.jsx';
 
 function shuffleArray(arr) {
   let array = [...arr];
@@ -51,7 +24,7 @@ export default function App() {
     const fetchPokemons = async () => {
       try {
         const responses = await Promise.all(
-          Array.from({ length: 20 }, (_, i) =>
+          Array.from({ length: 15 }, (_, i) =>
             fetch(`https://pokeapi.co/api/v2/pokemon/${i + 1}`).then((res) =>
               res.json()
             )
@@ -77,21 +50,25 @@ export default function App() {
 
   return (
     <div className="bg-zinc-900 text-zinc-300 min-h-screen p-8">
-      <h1 className="font-semibold text-4xl">Samay's Memory Game</h1>
-      <h2 className="font-medium text-xl">
-        Get points by clicking on an image but don't click on any more than
+      <h1 className="font-semibold text-4xl text-teal-100">Pokememory</h1>
+      <h2 className="font-medium ">
+        Get points by clicking on a Pokemon but don't click on any more than
         once!
       </h2>
-      <div className="p-4 flex flex-col items-center">
-        <p> Score: {score} </p>
-        <p> Best Score : {bestScore} </p>
+      <div className="p-4 text-lg flex flex-col items-center text-teal-100">
+        <p > Score: {score} </p>
+        <p> Best Score : <span className="text-emerald-400"> {bestScore} </span> </p>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         {pokemons.map((pokemon) => (
-          <Card key={pokemon.name} name={pokemon.name} image={pokemon.image} status={pokemon.chosen} setScore={setScore} setBestScore={setBestScore} setPokemons={setPokemons} score={score}/>
+          <Card key={pokemon.name} name={pokemon.name} image={pokemon.image} status={pokemon.chosen} setScore={setScore} setBestScore={setBestScore} setPokemons={setPokemons} score={score} shuffleArray={shuffleArray}/>
         ))}
       </div>
+
+      <footer className="mt-12">
+        <p> Developed by <a className="text-teal-100" target="_blank" href="https://github.com/timefliesidont"> Samay </a> </p>
+      </footer>
     </div>
   );
 }
